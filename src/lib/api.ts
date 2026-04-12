@@ -1,7 +1,7 @@
 const API_URL = "https://n8n.srv1009672.hstgr.cloud/webhook/healthcare-v2";
 const SHEETS_ID = "1pD_ZBL7P1j8Zd8NtsDHyTKRg1wdJ1OO6z21tjS01sK0";
 
-export const SHEETS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=Logs`;
+export const SHEETS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/export?format=csv&gid=0`;
 export const SHEETS_URL = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/edit`;
 
 export interface CasePayload {
