@@ -1,0 +1,18 @@
+export const testCases = [
+  { label: "Dolor toracico agudo (Urgencia)", paciente: "P-001", tipo: "texto" as const, prioridad: "alta" as const, origen: "urgencias",
+    texto: "Paciente masculino de 45 anos presenta dolor toracico agudo irradiado al brazo izquierdo, sudoracion profusa y disnea. Antecedentes: hipertension, diabetes tipo 2. ECG muestra elevacion del segmento ST en derivaciones V1-V4. Troponinas elevadas." },
+  { label: "Hemograma normal (Laboratorio)", paciente: "P-002", tipo: "texto" as const, prioridad: "normal" as const, origen: "laboratorio",
+    texto: "Resultados de laboratorio: Hemograma completo dentro de parametros normales. Hemoglobina 14.2 g/dL, Leucocitos 7500/uL, Plaquetas 250000/uL. Glucosa en ayunas 95 mg/dL. Creatinina 0.9 mg/dL." },
+  { label: "Radiografia con hallazgos (Imagen)", paciente: "P-003", tipo: "imagen" as const, prioridad: "alta" as const, origen: "radiologia",
+    texto: "Radiografia de torax PA: Se observa opacidad en base pulmonar derecha sugestiva de derrame pleural. Silueta cardiaca con cardiomegalia leve.", imagen: "https://example.com/radiografia-torax-001.jpg" },
+  { label: "Informe patologia (PDF)", paciente: "P-004", tipo: "pdf" as const, prioridad: "alta" as const, origen: "patologia",
+    texto: "Informe de anatomia patologica: Biopsia de nodulo tiroideo. Diagnostico: Carcinoma papilar de tiroides, variante clasica. Tamano tumoral 1.2 cm. Margenes quirurgicos libres." },
+  { label: "Consulta ambulatoria simple", paciente: "P-005", tipo: "texto" as const, prioridad: "normal" as const, origen: "consulta_ambulatoria",
+    texto: "Paciente femenina de 32 anos consulta por congestion nasal, dolor de garganta leve y tos seca de 3 dias de evolucion. Sin fiebre. Sin antecedentes relevantes." },
+  { label: "Interaccion farmacologica", paciente: "P-006", tipo: "texto" as const, prioridad: "alta" as const, origen: "farmacia",
+    texto: "Paciente de 70 anos polimedicado. Warfarina 5mg/dia, Amiodarona 200mg/dia, Metformina 850mg/12h, Enalapril 10mg/dia. Se solicita agregar Fluconazol 150mg por candidiasis oral." },
+  { label: "Valores criticos de laboratorio", paciente: "P-007", tipo: "texto" as const, prioridad: "alta" as const, origen: "laboratorio_urgente",
+    texto: "Laboratorio urgente: Potasio 6.8 mEq/L (VN: 3.5-5.0), Creatinina 4.2 mg/dL (VN: 0.7-1.3), Urea 120 mg/dL. Hemoglobina 8.5 g/dL. Paciente con IRC en dialisis." },
+  { label: "Evaluacion psiquiatrica urgente", paciente: "P-010", tipo: "texto" as const, prioridad: "alta" as const, origen: "salud_mental",
+    texto: "Evaluacion psiquiatrica urgente: Paciente de 28 anos derivado por ideacion suicida activa con plan estructurado. Antecedente de trastorno depresivo mayor. Sertralina 100mg suspendida hace 2 semanas." },
+];
