@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import { useCases } from "@/hooks/useCases";
 import { testCases } from "@/lib/testCases";
 import type { CasePayload, CaseRecord } from "@/lib/api";
+import { fileToBase64 } from "@/lib/api";
 import ResultPanel from "@/components/ResultPanel";
 import Badge from "@/components/Badge";
 import { origenLabels } from "@/lib/api";
@@ -17,6 +18,9 @@ export default function NuevoCaso() {
   const [prioridad, setPrioridad] = useState<"normal" | "alta">("normal");
   const [texto, setTexto] = useState("");
   const [imagenUrl, setImagenUrl] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [fileBase64, setFileBase64] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function fillForm(tc: (typeof testCases)[0]) {
     setPaciente(tc.paciente);
@@ -24,7 +28,32 @@ export default function NuevoCaso() {
     setTipo(tc.tipo);
     setPrioridad(tc.prioridad);
     setTexto(tc.texto);
+    setFileName("");
+    setFileBase64("");
     if ("imagen" in tc && tc.imagen) setImagenUrl(tc.imagen as string);
+    else setImagenUrl("");
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFileName(file.name);
+    try {
+      const base64 = await fileToBase64(file);
+      setFileBase64(base64);
+      if (tipo === "imagen") {
+        setImagenUrl(base64);
+      }
+    } catch {
+      setError("No se pudo leer el archivo");
+    }
+  }
+
+  function clearFile() {
+    setFileName("");
+    setFileBase64("");
+    if (tipo === "imagen") setImagenUrl("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -40,6 +69,7 @@ export default function NuevoCaso() {
       origen,
     };
     if (tipo === "imagen" && imagenUrl) payload.imagen_url = imagenUrl;
+    if (tipo === "pdf" && fileBase64) payload.pdf_base64 = fileBase64;
 
     try {
       const caso = await sendCase(payload);
@@ -92,11 +122,43 @@ export default function NuevoCaso() {
                 </select>
               </div>
             </div>
-            {tipo === "imagen" && (
+            {(tipo === "imagen" || tipo === "pdf") && (
               <div className="mb-3">
-                <label className="mb-1 block text-xs font-medium text-slate-400">URL de Imagen Medica</label>
-                <input value={imagenUrl} onChange={(e) => setImagenUrl(e.target.value)} type="url" placeholder="https://..."
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-sky-400" />
+                <label className="mb-1 block text-xs font-medium text-slate-400">
+                  {tipo === "imagen" ? "Imagen Medica" : "Documento PDF"}
+                </label>
+                {fileName ? (
+                  <div className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2">
+                    <span className="text-sm text-slate-300">{tipo === "imagen" ? "\u{1F5BC}" : "\u{1F4C4}"} {fileName}</span>
+                    <button type="button" onClick={clearFile}
+                      className="ml-auto rounded bg-slate-700 px-2 py-0.5 text-xs text-slate-400 hover:bg-slate-600 hover:text-white">
+                      Quitar
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex cursor-pointer flex-col items-center gap-1 rounded-lg border-2 border-dashed border-slate-700 bg-slate-950 px-3 py-4 text-center transition hover:border-sky-400"
+                  >
+                    <span className="text-2xl">{tipo === "imagen" ? "\u{1F4F7}" : "\u{1F4C1}"}</span>
+                    <span className="text-xs text-slate-400">
+                      Click para seleccionar {tipo === "imagen" ? "una imagen" : "un PDF"}
+                    </span>
+                    <span className="text-[10px] text-slate-600">
+                      {tipo === "imagen" ? "JPG, PNG, WEBP (max 10MB)" : "PDF (max 10MB)"}
+                    </span>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept={tipo === "imagen" ? "image/jpeg,image/png,image/webp" : "application/pdf"}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {tipo === "imagen" && fileBase64 && (
+                  <img src={fileBase64} alt="Preview" className="mt-2 max-h-40 rounded-lg border border-slate-700" />
+                )}
               </div>
             )}
             <div className="mb-4">
